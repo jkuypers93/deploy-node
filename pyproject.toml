@@ -5,10 +5,7 @@ description = "Custom deployment node for ComfyUI"
 authors = [
     { name="Deploy", email="hello@deploy.com" },
 ]
-dependencies = [
-    "torch",
-    "comfyui",
-]
+
 requires-python = ">=3.8"
 
 [project.urls]
