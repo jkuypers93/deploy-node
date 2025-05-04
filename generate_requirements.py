@@ -301,6 +301,15 @@ def get_file_hash(path, algo="sha256", chunk_size=8192):
 #         print(f"Error accessing ComfyUI API: {e}")
 #         return None
 
+def get_comfyui_version():
+    result = subprocess.run(
+            ["git", "tag", "--points-at", "HEAD"],
+            cwd=base_dir,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    return result.stdout.strip()
 
 @PromptServer.instance.routes.post("/deploy/generate_requirements")
 async def generate_requirements(request):
@@ -310,7 +319,8 @@ async def generate_requirements(request):
     workflow = data["workflow"]
     node_info = data["object_info"]
     custom_nodes = {}
-
+    comfyui_version = get_comfyui_version()
+    print(f"ComfyUI Version: {comfyui_version}")
     for node, node_metadata in node_info.items():
         if (
             "python_module" in node_metadata
@@ -367,6 +377,7 @@ async def generate_requirements(request):
         )
 
     package_object = {
+        "comfyui_version": comfyui_version,
         "custom_nodes": required_custom_nodes_with_git_info,
         "models": model_info,
     }
